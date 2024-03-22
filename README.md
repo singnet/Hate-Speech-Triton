@@ -8,8 +8,9 @@ The guide will consist of the following steps:
 4. [Local deployment and usage](#dev)
 5. [Moving post and preprocessing to the backend](#ens)
 6. [Using dynamic batching and instance group](#imp)
-   
-<a name="convert"><h3>1.Converting model to onnx format</h3></a>
+7. [Additional files for publishing](#pub)
+
+<a name="convert"><h3>1. Converting model to onnx format</h3></a>
 Models written in different frameworks can be converted to the onnx format, there are no general instructions for conversion.
 
 I will provide various links to examples:
@@ -20,9 +21,11 @@ I will provide various links to examples:
 
 [PyTorch](https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html)
 
-You can get ONNX model for this service here: [Download](https://snet-open-models.s3.amazonaws.com/hate-speech-detection/model.onnx) You should place this file inside hatespeech_repo/hate_speech_detection/1/ folder
+You can get ONNX model for this service here: [Download](https://snet-open-models.s3.amazonaws.com/hate-speech-detection/model.onnx)
 
-<a name="repo"><h3>2.Organization of the service repository</h3></a>
+You should place this file inside hatespeech_repo/hate_speech_detection/1/ folder
+
+<a name="repo"><h3>2. Organization of the service repository</h3></a>
 The repository should look like:
 ```
 hatespeech_repo/
@@ -38,7 +41,7 @@ Where:
 3. folders `1` - contain models under version 1
 4. `config.pbtxt` - models configurations files
 
-<a name="setup"><h3>3.Setting up configuration files</h3></a>
+<a name="setup"><h3>3. Setting up configuration files</h3></a>
 `config.pbtxt` for model should look like:
 ```
 name: "hate_speech_detection"
@@ -83,7 +86,7 @@ The result is known in advance because the model returns a list of four elements
 
 From here you can also establish that the inputs are of type `INT` and the output is `FLOAT`.
 
-<a name="dev"><h3>4.Local deployment and usage</h3></a>
+<a name="dev"><h3>4. Local deployment and usage</h3></a>
 Launching the server:
 ```
 docker run --gpus='"device=0"' -it --shm-size=256m --rm -p8000:8000 -p8001:8001 -p8002:8002 -v ${PWD}/hatespeech_repo:/models nvcr.io/nvidia/tritonserver:23.12-py3
@@ -163,7 +166,7 @@ Make call:
 python client.py
 ```
 
-<a name="ens"><h3>5.Moving post and preprocessing to the backend</h3></a>
+<a name="ens"><h3>5. Moving post and preprocessing to the backend</h3></a>
 The client application from the last part turned out to be very large and not entirely correct. Let's move post and preprocessing to our backend to fix it.
 
 Need to use [Model Ensembles](https://github.com/triton-inference-server/tutorials/tree/main/Conceptual_Guide/Part_5-Model_Ensembles)
@@ -619,7 +622,7 @@ docker run -it --net=host -v ${PWD}:/workspace/ nvcr.io/nvidia/tritonserver:yy.m
 python3 client.py
 # answer: ['{"hate": "0.0007111975", "abusing": "0.0004021231", "neutral": "0.0011137378", "spam": "0.9977728"}']
 ```
-<a name="imp"><h3>6.Using dynamic batching and instance group</h3></a>
+<a name="imp"><h3>6. Using dynamic batching and instance group</h3></a>
 Dynamic Batching and Concurrent Model Execution are features of Triton that improve throughput ([More info](https://github.com/triton-inference-server/tutorials/tree/main/Conceptual_Guide/Part_2-improving_resource_utilization)).
 To use them, just add the model configuration file:
 ```
@@ -646,7 +649,7 @@ dynamic_batching { }
 ```
 Also you can analyze you model using [Triton Analyzer](https://github.com/triton-inference-server/tutorials/tree/main/Conceptual_Guide/Part_2-improving_resource_utilization#measuring-performance)
 
-<a name="ens"><h3>7. Additional files for publishing</h3></a>
+<a name="pub"><h3>7. Additional files for publishing</h3></a>
 Protobuf files for this service, as well as example of demo files for marketplace portal can be found in resources direcrory. 
 
 For model file and where to put it check first section.
