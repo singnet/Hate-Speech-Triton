@@ -89,11 +89,7 @@ From here you can also establish that the inputs are of type `INT` and the outpu
 <a name="dev"><h3>4. Local deployment and usage</h3></a>
 Launching the server:
 ```
-docker run --gpus='"device=0"' -it --shm-size=256m --rm -p8000:8000 -p8001:8001 -p8002:8002 -v ${PWD}/hatespeech_repo:/models nvcr.io/nvidia/tritonserver:23.12-py3
-```
-Inside container:
-```
-tritonserver --model-repository=/models
+docker run --gpus='"device=0"' -it --shm-size=256m --rm -p8000:8000 -p8001:8001 -p8002:8002 -v /{full_path_to}/hatespeech_repo:/models nvcr.io/nvidia/tritonserver:23.12-py3 tritonserver --model-repository=/models
 ```
 Building a client application:
 
@@ -574,12 +570,9 @@ class TritonPythonModel:
 
 Everything is ready to start the server:
 ```
-docker run --gpus='"device=0"' -it --shm-size=256m --rm -p8000:8000 -p8001:8001 -p8002:8002 -v ${PWD}/hatespeech_repo:/models nvcr.io/nvidia/tritonserver:23.12-py3
+docker run --gpus='"device=0"' -it --shm-size=256m --rm -p8000:8000 -p8001:8001 -p8002:8002 -v /{full_path_to}/hatespeech_repo:/models nvcr.io/nvidia/tritonserver:23.12-py3 tritonserver --model-repository=/models
 ```
-Inside container:
-```
-tritonserver --model-repository=/models
-```
+
 Building a client application:
 ```python
 import time
